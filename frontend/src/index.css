@@ -65,5 +65,3 @@ pre[class*="language-"] {
 ::-webkit-scrollbar-thumb:hover {
   @apply bg-gray-500 dark:bg-gray-500;
 }
-
-

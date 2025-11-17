@@ -159,7 +159,7 @@ export async function runTest(code: string, browserType: BrowserType = 'chromium
         const errorScreenshotPath = join(mediaDir, 'error-screenshot.png')
         await page.screenshot({ path: errorScreenshotPath, fullPage: true })
         screenshots.push(`/api/media/${testId}/error-screenshot.png`)
-      } catch {}
+      } catch { }
     }
 
     // Close browser
@@ -182,16 +182,16 @@ export async function runTest(code: string, browserType: BrowserType = 'chromium
       try {
         const files = readdirSync(mediaDir)
         const webmFile = files.find(f => f.endsWith('.webm'))
-        
+
         if (webmFile) {
           const filePath = join(mediaDir, webmFile)
           const stats = statSync(filePath)
-          
+
           // Ensure file has some content and hasn't been modified recently
           if (stats.size > 1000) { // At least 1KB
             // Wait a bit more to ensure file writing is complete
             await new Promise(resolve => setTimeout(resolve, 500))
-            
+
             // Check if file size is stable (not growing)
             const newStats = statSync(filePath)
             if (newStats.size === stats.size) {
@@ -203,7 +203,7 @@ export async function runTest(code: string, browserType: BrowserType = 'chromium
       } catch (err) {
         console.log(`Attempt ${attempts + 1} to find video file failed:`, err)
       }
-      
+
       attempts++
       if (attempts < maxAttempts) {
         await new Promise(resolve => setTimeout(resolve, 1000))

@@ -65,9 +65,9 @@ export default function ResultsPanel({ result }: ResultsPanelProps) {
           <h3 className="text-sm font-semibold mb-2 text-gray-900 dark:text-white">
             Recording
           </h3>
-          <VideoPlayer 
+          <VideoPlayer
             key={`${result.videoUrl}-${Date.now()}`}
-            videoUrl={result.videoUrl} 
+            videoUrl={result.videoUrl}
           />
         </div>
       )}
