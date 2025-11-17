@@ -193,7 +193,10 @@ export default function ExampleViewer({ example }: ExampleViewerProps) {
                 <h3 className="text-sm font-semibold mb-2 text-gray-900 dark:text-white">
                   Recording
                 </h3>
-                <VideoPlayer videoUrl={result.videoUrl} />
+                <VideoPlayer 
+                  key={`${result.videoUrl}-${Date.now()}`}
+                  videoUrl={result.videoUrl} 
+                />
               </div>
             )}
 

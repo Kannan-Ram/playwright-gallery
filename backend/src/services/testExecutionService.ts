@@ -169,15 +169,50 @@ export async function runTest(code: string, browserType: BrowserType = 'chromium
     // Wait for video to be saved (Playwright saves it asynchronously after context closes)
     // Video files are saved with random hash filenames like "a2ec31605f7c98debb6e36265a0917cc.webm"
     // Increased wait time to ensure video is fully written to disk
-    await new Promise(resolve => setTimeout(resolve, 2000))
+    await new Promise(resolve => setTimeout(resolve, 3000))
 
-    // Find the actual video file
-    const { readdirSync } = await import('fs')
-    const files = readdirSync(mediaDir)
-    const videoFile = files.find(f => f.endsWith('.webm'))
+    // Find the actual video file and ensure it's complete
+    const { readdirSync, statSync } = await import('fs')
+    let videoFile: string | undefined
+    let attempts = 0
+    const maxAttempts = 10
+
+    // Retry logic to ensure video file is completely written
+    while (!videoFile && attempts < maxAttempts) {
+      try {
+        const files = readdirSync(mediaDir)
+        const webmFile = files.find(f => f.endsWith('.webm'))
+        
+        if (webmFile) {
+          const filePath = join(mediaDir, webmFile)
+          const stats = statSync(filePath)
+          
+          // Ensure file has some content and hasn't been modified recently
+          if (stats.size > 1000) { // At least 1KB
+            // Wait a bit more to ensure file writing is complete
+            await new Promise(resolve => setTimeout(resolve, 500))
+            
+            // Check if file size is stable (not growing)
+            const newStats = statSync(filePath)
+            if (newStats.size === stats.size) {
+              videoFile = webmFile
+              break
+            }
+          }
+        }
+      } catch (err) {
+        console.log(`Attempt ${attempts + 1} to find video file failed:`, err)
+      }
+      
+      attempts++
+      if (attempts < maxAttempts) {
+        await new Promise(resolve => setTimeout(resolve, 1000))
+      }
+    }
 
     if (videoFile) {
-      videoUrl = `/api/media/${testId}/${videoFile}`
+      // Add timestamp to prevent caching of incomplete videos
+      videoUrl = `/api/media/${testId}/${videoFile}?t=${Date.now()}`
     }
   } catch (err: any) {
     error = err.message || String(err)

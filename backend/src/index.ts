@@ -37,6 +37,13 @@ app.use('/api/media', express.static('media', {
     if (path.endsWith('.webm')) {
       res.setHeader('Content-Type', 'video/webm')
       res.setHeader('Accept-Ranges', 'bytes')
+      // Prevent caching of potentially incomplete videos
+      res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate')
+      res.setHeader('Pragma', 'no-cache')
+      res.setHeader('Expires', '0')
+    } else if (path.endsWith('.png')) {
+      res.setHeader('Content-Type', 'image/png')
+      res.setHeader('Cache-Control', 'public, max-age=3600')
     }
   }
 }))
