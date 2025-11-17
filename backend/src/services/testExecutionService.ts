@@ -36,8 +36,10 @@ export async function runTest(code: string, browserType: BrowserType = 'chromium
     const browserEngine = browserMap[browserType]
 
     // Launch browser with video recording
+    // slowMo adds delay between actions for better video visibility
     const browser = await browserEngine.launch({
       headless: true,
+      slowMo: 500, // 500ms delay between actions for better video recording
     })
 
     const context = await browser.newContext({
@@ -166,7 +168,8 @@ export async function runTest(code: string, browserType: BrowserType = 'chromium
 
     // Wait for video to be saved (Playwright saves it asynchronously after context closes)
     // Video files are saved with random hash filenames like "a2ec31605f7c98debb6e36265a0917cc.webm"
-    await new Promise(resolve => setTimeout(resolve, 1000))
+    // Increased wait time to ensure video is fully written to disk
+    await new Promise(resolve => setTimeout(resolve, 2000))
 
     // Find the actual video file
     const { readdirSync } = await import('fs')
