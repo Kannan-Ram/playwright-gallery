@@ -61,15 +61,25 @@ export async function runTest(code: string, browserType: BrowserType = 'chromium
 
     try {
       // Execute the test code
-      // We need to wrap it in an async function to execute
-      const wrappedCode = `
-        (async () => {
-          ${code.replace(/import\s+.*from\s+['"]@playwright\/test['"];?/g, '')}
-        })()
-      `
+      // Remove import statement
+      const codeToExecute = code.replace(/import\s+.*from\s+['"]@playwright\/test['"];?/g, '')
 
-      // Create a safer execution context
-      const testFunction = new Function('page', 'expect', wrappedCode)
+      // Create a safer execution context with test function
+      const testFunction = new Function('page', 'expect', 'test', `
+        return (async () => {
+          ${codeToExecute}
+        })();
+      `)
+
+      // Capture the test callback - this is the key fix!
+      // The test() function is called but NOT awaited in user code,
+      // so we need to capture the callback and await it ourselves
+      let testCallback: any = null
+
+      const test = (name: string, callback: any) => {
+        testCallback = callback
+        // Don't execute yet - just capture it
+      }
 
       // Simple expect implementation
       const expect = (value: any) => ({
@@ -122,7 +132,13 @@ export async function runTest(code: string, browserType: BrowserType = 'chromium
         },
       })
 
-      await testFunction(page, expect)
+      // First, execute the code - this will register the test callback
+      await testFunction(page, expect, test)
+
+      // Now, if a test was registered, execute it
+      if (testCallback) {
+        await testCallback({ page })
+      }
 
       output = logs.join('\n') || 'Test executed successfully'
       success = true
@@ -148,10 +164,18 @@ export async function runTest(code: string, browserType: BrowserType = 'chromium
     await context.close()
     await browser.close()
 
-    // Video path
-    const videoPath = join(mediaDir, 'video.webm')
-    // Note: Video might not be immediately available, Playwright saves it after context closes
-    videoUrl = `/api/media/${testId}/video.webm`
+    // Wait for video to be saved (Playwright saves it asynchronously after context closes)
+    // Video files are saved with random hash filenames like "a2ec31605f7c98debb6e36265a0917cc.webm"
+    await new Promise(resolve => setTimeout(resolve, 1000))
+
+    // Find the actual video file
+    const { readdirSync } = await import('fs')
+    const files = readdirSync(mediaDir)
+    const videoFile = files.find(f => f.endsWith('.webm'))
+
+    if (videoFile) {
+      videoUrl = `/api/media/${testId}/${videoFile}`
+    }
   } catch (err: any) {
     error = err.message || String(err)
     success = false
