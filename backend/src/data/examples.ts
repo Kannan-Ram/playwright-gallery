@@ -848,9 +848,6 @@ test('with fixture', async ({ authenticatedPage }) => {
 test('form validation', async ({ page }) => {
   await page.goto('https://the-internet.herokuapp.com/login');
 
-  // Test empty submission
-  await page.click('button[type="submit"]');
-
   // Test invalid credentials
   await page.fill('#username', 'invalid');
   await page.fill('#password', 'wrong');
