@@ -85,7 +85,7 @@ export default function Sidebar({ isOpen, isCollapsed, onClose, onToggleCollapse
                     className={`flex items-center ${isCollapsed ? 'px-3 py-3 justify-center' : 'px-3 py-2'} rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors group relative`}
                     title={isCollapsed ? 'Home' : ''}
                   >
-                    <Home 
+                    <Home
                       className={`nav-icon ${isCollapsed ? 'h-8 w-8' : 'h-5 w-5 mr-3'} text-gray-600 dark:text-gray-400`}
                       style={isCollapsed ? { width: '32px', height: '32px' } : {}}
                     />
@@ -104,7 +104,7 @@ export default function Sidebar({ isOpen, isCollapsed, onClose, onToggleCollapse
                     className={`flex items-center ${isCollapsed ? 'px-3 py-3 justify-center' : 'px-3 py-2'} rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors group relative`}
                     title={isCollapsed ? 'Gallery' : ''}
                   >
-                    <Grid 
+                    <Grid
                       className={`nav-icon ${isCollapsed ? 'h-8 w-8' : 'h-5 w-5 mr-3'} text-gray-600 dark:text-gray-400`}
                       style={isCollapsed ? { width: '32px', height: '32px' } : {}}
                     />
@@ -123,7 +123,7 @@ export default function Sidebar({ isOpen, isCollapsed, onClose, onToggleCollapse
                     className={`flex items-center ${isCollapsed ? 'px-3 py-3 justify-center' : 'px-3 py-2'} rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors group relative`}
                     title={isCollapsed ? 'Playground' : ''}
                   >
-                    <Code2 
+                    <Code2
                       className={`nav-icon ${isCollapsed ? 'h-8 w-8' : 'h-5 w-5 mr-3'} text-gray-600 dark:text-gray-400`}
                       style={isCollapsed ? { width: '32px', height: '32px' } : {}}
                     />
@@ -183,7 +183,7 @@ export default function Sidebar({ isOpen, isCollapsed, onClose, onToggleCollapse
                     className={`flex items-center ${isCollapsed ? 'px-3 py-3 justify-center' : 'px-3 py-2'} rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors group relative`}
                     title={isCollapsed ? 'Documentation' : ''}
                   >
-                    <BookOpen 
+                    <BookOpen
                       className={`nav-icon ${isCollapsed ? 'h-8 w-8' : 'h-5 w-5 mr-3'} text-gray-600 dark:text-gray-400`}
                       style={isCollapsed ? { width: '32px', height: '32px' } : {}}
                     />

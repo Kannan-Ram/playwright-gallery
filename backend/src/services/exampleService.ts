@@ -14,11 +14,27 @@ export interface PlaywrightExample {
   commonPitfalls: string[]
 }
 
+
+function normalizeDifficulty(difficulty: string): 'beginner' | 'intermediate' | 'advanced' {
+  if (difficulty === 'beginner' || difficulty === 'intermediate' || difficulty === 'advanced') {
+    return difficulty;
+  }
+  return 'beginner'; // fallback
+}
+
 export async function getAllExamples(): Promise<PlaywrightExample[]> {
-  return examplesData
+  // Map difficulty to correct type
+  return examplesData.map((ex: any) => ({
+    ...ex,
+    difficulty: normalizeDifficulty(ex.difficulty),
+  }));
 }
 
 export async function getExampleById(id: string): Promise<PlaywrightExample | null> {
-  const example = examplesData.find((ex) => ex.id === id)
-  return example || null
+  const ex = examplesData.find((ex) => ex.id === id);
+  if (!ex) return null;
+  return {
+    ...ex,
+    difficulty: normalizeDifficulty(ex.difficulty),
+  };
 }

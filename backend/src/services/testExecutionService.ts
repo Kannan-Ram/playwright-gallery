@@ -114,11 +114,11 @@ export async function runTest(code: string, browserType: BrowserType = 'chromium
             if (!text?.includes(expected)) throw new Error(`Expected text to contain "${expected}", but got: "${text}"`)
           }
         },
-        toHaveAttribute: async (attr: string, value?: string) => {
+        toHaveAttribute: async (attr: string, expected?: string) => {
           if (value && typeof value.getAttribute === 'function') {
             const attrValue = await value.getAttribute(attr)
             if (attrValue === null) throw new Error(`Element does not have attribute "${attr}"`)
-            if (value && attrValue !== value) throw new Error(`Expected attribute "${attr}" to be "${value}", but got: "${attrValue}"`)
+            if (expected !== undefined && attrValue !== expected) throw new Error(`Expected attribute "${attr}" to be "${expected}", but got: "${attrValue}"`)
           }
         },
         toHaveCount: async (expected: number) => {
