@@ -1,0 +1,42 @@
+{
+  "name": "playwright-gallery",
+  "version": "1.0.0",
+  "description": "Interactive gallery and showcase application for Playwright testing framework",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "backend",
+    "demo-site"
+  ],
+  "scripts": {
+    "install:all": "npm install && npm install --prefix frontend && npm install --prefix backend && npm install --prefix demo-site",
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\" \"npm run dev:demo\"",
+    "dev:frontend": "cd frontend && npm run dev",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:demo": "cd demo-site && npm run dev",
+    "build": "npm run build:frontend && npm run build:backend && npm run build:demo",
+    "build:frontend": "cd frontend && npm run build",
+    "build:backend": "cd backend && npm run build",
+    "build:demo": "cd demo-site && npm run build",
+    "start": "concurrently \"npm run start:backend\" \"npm run start:frontend\" \"npm run start:demo\"",
+    "start:backend": "cd backend && npm start",
+    "start:frontend": "cd frontend && npm run preview",
+    "start:demo": "cd demo-site && npm run preview",
+    "docker:build": "docker-compose build",
+    "docker:up": "docker-compose up",
+    "docker:down": "docker-compose down"
+  },
+  "keywords": [
+    "playwright",
+    "testing",
+    "gallery",
+    "showcase",
+    "examples",
+    "e2e"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

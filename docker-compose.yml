@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - VITE_API_URL=http://localhost:3001/api
+      - VITE_DEMO_URL=http://localhost:3002
+    depends_on:
+      - backend
+      - demo-site
+    networks:
+      - playwright-gallery-network
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    ports:
+      - "3001:3001"
+    environment:
+      - PORT=3001
+      - NODE_ENV=production
+    volumes:
+      - media-data:/app/media
+    networks:
+      - playwright-gallery-network
+
+  demo-site:
+    build:
+      context: .
+      dockerfile: Dockerfile.demo
+    ports:
+      - "3002:3002"
+    networks:
+      - playwright-gallery-network
+
+networks:
+  playwright-gallery-network:
+    driver: bridge
+
+volumes:
+  media-data:

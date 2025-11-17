@@ -1,0 +1,65 @@
+import express from 'express'
+import cors from 'cors'
+import rateLimit from 'express-rate-limit'
+import examplesRouter from './routes/examples.js'
+import testRunnerRouter from './routes/testRunner.js'
+import playgroundRouter from './routes/playground.js'
+import { cleanupOldFiles } from './utils/cleanup.js'
+
+const app = express()
+const PORT = process.env.PORT || 3001
+
+// Middleware
+app.use(cors())
+app.use(express.json({ limit: '1mb' }))
+
+// Rate limiting
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // Limit each IP to 100 requests per windowMs
+  message: 'Too many requests from this IP, please try again later.',
+})
+
+const testLimiter = rateLimit({
+  windowMs: 5 * 60 * 1000, // 5 minutes
+  max: 20, // Limit test execution to 20 per 5 minutes
+  message: 'Too many test executions, please try again later.',
+})
+
+app.use('/api', limiter)
+app.use('/api/run-test', testLimiter)
+app.use('/api/playground/execute', testLimiter)
+
+// Serve static files (recordings, screenshots)
+app.use('/api/media', express.static('media'))
+
+// Routes
+app.use('/api/examples', examplesRouter)
+app.use('/api', testRunnerRouter)
+app.use('/api/playground', playgroundRouter)
+
+// Health check
+app.get('/api/health', (req, res) => {
+  res.json({ status: 'ok', timestamp: new Date().toISOString() })
+})
+
+// Error handling
+app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+  console.error('Error:', err)
+  res.status(err.status || 500).json({
+    error: err.message || 'Internal server error',
+  })
+})
+
+// Cleanup old files every hour
+setInterval(() => {
+  cleanupOldFiles()
+}, 60 * 60 * 1000)
+
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on http://localhost:${PORT}`)
+  console.log(`📚 API available at http://localhost:${PORT}/api`)
+
+  // Initial cleanup
+  cleanupOldFiles()
+})
