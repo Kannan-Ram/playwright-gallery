@@ -57,7 +57,54 @@ The application will be available at:
 - **Backend API**: http://localhost:3001
 - **Demo Site**: http://localhost:3002
 
-### Option 2: Docker
+
+### Option 2: Public Testing with ngrok
+
+You can share your local Playwright Gallery with anyone on the internet using ngrok. This exposes the frontend, backend, and demo site with public URLs.
+
+#### 1. Start all services (in one terminal):
+```bash
+npm run dev
+```
+This will start the frontend (port 3000), backend (port 3001), and demo site (port 3002).
+
+#### 2. Start ngrok tunnels (in another terminal):
+```bash
+npx ngrok start --all --config ./ngrok.yml
+```
+This will create three public URLs and display them in the terminal:
+- **frontend** - Public URL for the main application
+- **backend** - Public URL for the API server
+- **demo** - Public URL for the demo/test site
+
+#### 3. Update the frontend `.env` file:
+Edit `frontend/.env` and set the environment variables using the ngrok URLs from step 2:
+
+```bash
+VITE_API_URL=https://<your-backend-ngrok-subdomain>.ngrok-free.app/api
+VITE_DEMO_URL=https://<your-demo-ngrok-subdomain>.ngrok-free.app
+```
+
+**Example:**
+```bash
+VITE_API_URL=https://4d703f6ab569.ngrok-free.app/api
+VITE_DEMO_URL=https://a1b2c3d4e5f6.ngrok-free.app
+```
+
+#### 4. Restart the frontend:
+After updating the `.env` file, the frontend will automatically reload. If not, restart it:
+```bash
+# Stop the dev server (Ctrl+C) and restart
+npm run dev
+```
+
+**Now you and others can access the app via the public ngrok frontend URL, and all features (including test execution, screenshots, and video) will work!**
+
+**Note:** The playground templates include the `ngrok-skip-browser-warning` header, so tests will run smoothly against the ngrok demo site URL.
+
+---
+
+### Option 3: Docker
 
 ```bash
 # Build and start all services

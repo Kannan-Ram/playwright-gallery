@@ -37,7 +37,8 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "concurrently": "^8.2.2"
+    "concurrently": "^8.2.2",
+    "ngrok": "^5.0.0-beta.2"
   },
   "overrides": {
     "dompurify": "^3.2.4"

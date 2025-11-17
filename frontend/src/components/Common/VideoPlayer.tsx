@@ -1,5 +1,7 @@
+
 import { useEffect, useRef, useState } from 'react'
 import { Play } from 'lucide-react'
+import { API_BASE_URL } from '../../utils/constants'
 
 interface VideoPlayerProps {
   videoUrl: string
@@ -21,26 +23,47 @@ export default function VideoPlayer({ videoUrl, poster }: VideoPlayerProps) {
     // Force video to reload when URL changes
     video.load()
 
+    // Timeout fallback - if video doesn't load within 5 seconds, clear loading state
+    const loadingTimeout = setTimeout(() => {
+      console.log('Video loading timeout - clearing loading state')
+      setIsLoading(false)
+    }, 5000)
+
     const handleLoadedMetadata = () => {
+      console.log('Video metadata loaded')
+      clearTimeout(loadingTimeout)
       setIsLoading(false)
     }
 
     const handleCanPlay = () => {
+      console.log('Video can play')
+      clearTimeout(loadingTimeout)
       setIsLoading(false)
     }
 
-    const handleError = () => {
+    const handleLoadedData = () => {
+      console.log('Video data loaded')
+      clearTimeout(loadingTimeout)
+      setIsLoading(false)
+    }
+
+    const handleError = (e: Event) => {
+      console.error('Video loading error:', e)
+      clearTimeout(loadingTimeout)
       setIsLoading(false)
       setHasError(true)
     }
 
     video.addEventListener('loadedmetadata', handleLoadedMetadata)
     video.addEventListener('canplay', handleCanPlay)
+    video.addEventListener('loadeddata', handleLoadedData)
     video.addEventListener('error', handleError)
 
     return () => {
+      clearTimeout(loadingTimeout)
       video.removeEventListener('loadedmetadata', handleLoadedMetadata)
       video.removeEventListener('canplay', handleCanPlay)
+      video.removeEventListener('loadeddata', handleLoadedData)
       video.removeEventListener('error', handleError)
     }
   }, [videoUrl])
@@ -56,7 +79,12 @@ export default function VideoPlayer({ videoUrl, poster }: VideoPlayerProps) {
         playsInline
         key={videoUrl} // Force React to recreate the element when URL changes
       >
-        <source src={videoUrl} type="video/webm" />
+        <source
+          src={/^(https?:)?\//.test(videoUrl)
+            ? videoUrl
+            : `${API_BASE_URL.replace(/\/api$/, '')}${videoUrl}`}
+          type="video/webm"
+        />
         Your browser does not support the video tag.
       </video>
 

@@ -5,6 +5,10 @@ export default defineConfig({
   publicDir: 'public',
   server: {
     port: 3002,
+    allowedHosts: [
+      '.ngrok-free.app',
+      '.ngrok.app',
+    ],
   },
   build: {
     outDir: 'dist',

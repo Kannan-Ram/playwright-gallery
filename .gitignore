@@ -13,6 +13,9 @@ build/
 .env.local
 .env.*.local
 
+# Ngrok configuration (contains auth token)
+ngrok.yml
+
 # Logs
 logs
 *.log

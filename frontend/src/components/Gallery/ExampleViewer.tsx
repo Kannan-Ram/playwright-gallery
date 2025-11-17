@@ -206,14 +206,20 @@ export default function ExampleViewer({ example }: ExampleViewerProps) {
                   Screenshots
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {result.screenshots.map((screenshot, index) => (
-                    <img
-                      key={index}
-                      src={screenshot}
-                      alt={`Screenshot ${index + 1}`}
-                      className="rounded-lg border border-gray-200 dark:border-gray-700"
-                    />
-                  ))}
+                  {result.screenshots.map((screenshot, index) => {
+                    // If screenshot is a relative path, prepend API_BASE_URL (without /api)
+                    const isAbsolute = /^https?:\/\//.test(screenshot);
+                    const baseUrl = API_BASE_URL.replace(/\/api$/, '');
+                    const src = isAbsolute ? screenshot : `${baseUrl}${screenshot}`;
+                    return (
+                      <img
+                        key={index}
+                        src={src}
+                        alt={`Screenshot ${index + 1}`}
+                        className="rounded-lg border border-gray-200 dark:border-gray-700"
+                      />
+                    );
+                  })}
                 </div>
               </div>
             )}

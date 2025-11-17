@@ -8,6 +8,11 @@ import { DEMO_SITE_URL } from '../utils/constants'
 const DEFAULT_CODE = `import { test, expect } from '@playwright/test';
 
 test('example test', async ({ page }) => {
+  // Set the ngrok-skip-browser-warning header for all requests
+  await page.setExtraHTTPHeaders({
+    'ngrok-skip-browser-warning': 'true'
+  });
+
   // Navigate to the demo site
   await page.goto('${DEMO_SITE_URL}');
 
@@ -111,6 +116,11 @@ export default function PlaygroundPage() {
               setCode(`import { test, expect } from '@playwright/test';
 
 test('form submission', async ({ page }) => {
+  // Set the ngrok-skip-browser-warning header
+  await page.setExtraHTTPHeaders({
+    'ngrok-skip-browser-warning': 'true'
+  });
+
   await page.goto('${DEMO_SITE_URL}');
 
   // Fill form fields
@@ -140,6 +150,11 @@ test('form submission', async ({ page }) => {
               setCode(`import { test, expect } from '@playwright/test';
 
 test('navigation test', async ({ page }) => {
+  // Set the ngrok-skip-browser-warning header
+  await page.setExtraHTTPHeaders({
+    'ngrok-skip-browser-warning': 'true'
+  });
+
   await page.goto('${DEMO_SITE_URL}');
 
   // Click navigation link
@@ -166,6 +181,11 @@ test('navigation test', async ({ page }) => {
               setCode(`import { test, expect } from '@playwright/test';
 
 test('element interaction', async ({ page }) => {
+  // Set the ngrok-skip-browser-warning header
+  await page.setExtraHTTPHeaders({
+    'ngrok-skip-browser-warning': 'true'
+  });
+
   await page.goto('${DEMO_SITE_URL}');
 
   // Wait for element
@@ -198,6 +218,11 @@ test('element interaction', async ({ page }) => {
               setCode(`import { test, expect } from '@playwright/test';
 
 test('assertions example', async ({ page }) => {
+  // Set the ngrok-skip-browser-warning header
+  await page.setExtraHTTPHeaders({
+    'ngrok-skip-browser-warning': 'true'
+  });
+
   await page.goto('${DEMO_SITE_URL}');
 
   // Visibility assertions

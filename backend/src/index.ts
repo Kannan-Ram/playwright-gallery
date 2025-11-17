@@ -10,7 +10,33 @@ const app = express()
 const PORT = process.env.PORT || 3001
 
 // Middleware
-app.use(cors())
+app.use(cors({
+  origin: (origin, callback) => {
+    // Allow requests with no origin (like mobile apps, Postman, curl)
+    if (!origin) return callback(null, true)
+
+    const allowedOrigins = [
+      'http://localhost:3000',
+      'http://localhost:3001',
+      'http://localhost:3002',
+    ]
+
+    // Check if origin is in allowed list
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true)
+    }
+
+    // Check if origin matches ngrok pattern
+    if (/^https?:\/\/.*\.ngrok(-free)?\.app$/.test(origin)) {
+      return callback(null, true)
+    }
+
+    // For development, allow all origins
+    // In production, you should remove this and only allow specific origins
+    return callback(null, true)
+  },
+  credentials: true,
+}))
 app.use(express.json({ limit: '1mb' }))
 
 // Rate limiting
@@ -54,12 +80,12 @@ app.use('/api', testRunnerRouter)
 app.use('/api/playground', playgroundRouter)
 
 // Health check
-app.get('/api/health', (req, res) => {
+app.get('/api/health', (_req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() })
 })
 
 // Error handling
-app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+app.use((err: any, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
   console.error('Error:', err)
   res.status(err.status || 500).json({
     error: err.message || 'Internal server error',

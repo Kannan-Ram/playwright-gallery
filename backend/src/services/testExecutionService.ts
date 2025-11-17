@@ -1,5 +1,5 @@
 import { chromium, firefox, webkit } from '@playwright/test'
-import { writeFileSync, mkdirSync, existsSync } from 'fs'
+import { mkdirSync, existsSync } from 'fs'
 import { join } from 'path'
 import { v4 as uuidv4 } from 'uuid'
 
@@ -78,7 +78,7 @@ export async function runTest(code: string, browserType: BrowserType = 'chromium
       // so we need to capture the callback and await it ourselves
       let testCallback: any = null
 
-      const test = (name: string, callback: any) => {
+      const test = (_name: string, callback: any) => {
         testCallback = callback
         // Don't execute yet - just capture it
       }
