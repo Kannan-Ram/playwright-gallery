@@ -31,7 +31,15 @@ app.use('/api/run-test', testLimiter)
 app.use('/api/playground/execute', testLimiter)
 
 // Serve static files (recordings, screenshots)
-app.use('/api/media', express.static('media'))
+// Use express.static with proper options for video streaming
+app.use('/api/media', express.static('media', {
+  setHeaders: (res, path) => {
+    if (path.endsWith('.webm')) {
+      res.setHeader('Content-Type', 'video/webm')
+      res.setHeader('Accept-Ranges', 'bytes')
+    }
+  }
+}))
 
 // Routes
 app.use('/api/examples', examplesRouter)
