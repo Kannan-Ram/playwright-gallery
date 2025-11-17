@@ -65,3 +65,16 @@ pre[class*="language-"] {
 ::-webkit-scrollbar-thumb:hover {
   @apply bg-gray-500 dark:bg-gray-500;
 }
+
+/* Force icon sizes in sidebar */
+.sidebar-nav svg {
+  width: inherit !important;
+  height: inherit !important;
+}
+
+/* Scale icons larger when sidebar is collapsed */
+.sidebar-collapsed .nav-icon {
+  transform: scale(2.0) !important;
+  width: 24px !important;
+  height: 24px !important;
+}
